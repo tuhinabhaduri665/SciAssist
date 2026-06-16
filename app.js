@@ -6,8 +6,7 @@
 'use strict';
 
 /* ---- Constants ---- */
-const GROK_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
-const MODEL = 'llama-3.3-70b-versatile';
+const API_ENDPOINT = '/api/chat'; // Vercel serverless proxy — key never in browser
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_IMAGE_TYPES = ['image/png','image/jpeg','image/jpg','image/gif','image/webp'];
 const ALLOWED_DOC_TYPES = ['application/pdf','text/plain','text/csv','application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
@@ -69,16 +68,15 @@ const WELCOME_CHIPS = [
 
 /* ---- State ---- */
 let state = {
-  messages: [],          // { id, role, content, attachments, timestamp, isError }
+  messages: [],
   isLoading: false,
-  mode: 'auto',          // 'auto' | 'manual'
+  mode: 'auto',
   pendingGenerate: false,
   abortController: null,
-  apiKey: '',
   isSpeaking: false,
   isListening: false,
   speechRecognition: null,
-  pendingAttachments: [],// { id, name, type, mimeType, size, dataUrl, file }
+  pendingAttachments: [],
 };
 
 /* ---- DOM Refs ---- */
@@ -91,8 +89,6 @@ const newChatBtn = $('newChatBtn');
 const topicsList = $('topicsList');
 const themeToggle = $('themeToggle');
 const themeLabel = $('themeLabel');
-const apiKeyInput = $('apiKeyInput');
-const saveApiKey = $('saveApiKey');
 const modeAuto = $('modeAuto');
 const modeManual = $('modeManual');
 const clearChatBtn = $('clearChatBtn');
@@ -117,7 +113,6 @@ const toastContainer = $('toastContainer');
 /* ---- Init ---- */
 function init() {
   loadTheme();
-  loadApiKey();
   loadUserInfo();
   buildTopics();
   buildWelcomeChips();
@@ -159,29 +154,6 @@ function applyTheme(theme) {
 function toggleTheme() {
   const current = document.documentElement.getAttribute('data-theme');
   applyTheme(current === 'dark' ? 'light' : 'dark');
-}
-
-/* ---- API Key ---- */
-function loadApiKey() {
-  const saved = localStorage.getItem('sciassist-apikey');
-  // Clear any old xai- key from previous Grok setup
-  if (saved && saved.startsWith('xai-')) {
-    localStorage.removeItem('sciassist-apikey');
-    return;
-  }
-  if (saved) {
-    state.apiKey = saved;
-    apiKeyInput.value = saved;
-  }
-}
-
-function saveKey() {
-  const val = apiKeyInput.value.trim();
-  if (!val) { showToast('Please enter your Groq API key.', 'warning'); return; }
-  if (!val.startsWith('gsk_')) { showToast('Groq API keys start with "gsk_". Please check your key.', 'warning'); return; }
-  state.apiKey = val;
-  localStorage.setItem('sciassist-apikey', val);
-  showToast('API key saved!', 'success');
 }
 
 /* ---- Topics Sidebar ---- */
@@ -258,8 +230,6 @@ function bindEvents() {
   sidebarOverlay.addEventListener('click', closeSidebar);
   newChatBtn.addEventListener('click', clearChat);
   themeToggle.addEventListener('click', toggleTheme);
-  saveApiKey.addEventListener('click', saveKey);
-  apiKeyInput.addEventListener('keydown', e => { if (e.key === 'Enter') saveKey(); });
   modeAuto.addEventListener('click', () => setMode('auto'));
   modeManual.addEventListener('click', () => setMode('manual'));
   clearChatBtn.addEventListener('click', clearChat);
@@ -390,11 +360,6 @@ function stopGeneration() {
 
 /* ---- Submit Message ---- */
 async function submitMessage() {
-  if (!state.apiKey) {
-    showToast('Please enter your Grok API key in the sidebar.', 'warning');
-    apiKeyInput.focus();
-    return;
-  }
   const text = messageInput.value.trim();
   const attachments = [...state.pendingAttachments];
   if (!text && attachments.length === 0) return;
@@ -430,10 +395,6 @@ async function submitMessage() {
 /* ---- Generate Response ---- */
 async function generateResponse() {
   if (state.isLoading) return;
-  if (!state.apiKey) {
-    showToast('Please save your Groq API key first.', 'warning');
-    return;
-  }
 
   // Hide generate banner
   generateBanner.hidden = true;
@@ -456,7 +417,7 @@ async function generateResponse() {
 
   try {
     state.abortController = new AbortController();
-    const fullText = await streamGrokResponse(grokMessages, state.apiKey, state.abortController.signal, aiMsgId);
+    const fullText = await streamGrokResponse(grokMessages, null, state.abortController.signal, aiMsgId);
     // Finalize
     const msgObj = state.messages.find(m => m.id === aiMsgId);
     if (msgObj) {
@@ -514,21 +475,12 @@ function buildGrokMessages() {
   return msgs;
 }
 
-/* ---- Groq Streaming API ---- */
-async function streamGrokResponse(messages, apiKey, signal, msgId) {
-  const response = await fetch(GROK_API_URL, {
+/* ---- Groq Streaming Proxy ---- */
+async function streamGrokResponse(messages, _unusedKey, signal, msgId) {
+  const response = await fetch(API_ENDPOINT, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model: MODEL,
-      messages,
-      stream: true,
-      temperature: 0.3,
-      max_tokens: 4096,
-    }),
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ messages, stream: true }),
     signal,
   });
 

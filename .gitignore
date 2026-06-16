@@ -1,5 +1,18 @@
-__pycache__/
-*.pyc
-.venv/
-venv/
-.env/
+# Environment variables — NEVER commit these
+.env
+.env.local
+.env.production
+.env*.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/settings.json
+*.suo
+*.user
+
+# Logs
+*.log
+npm-debug.log*

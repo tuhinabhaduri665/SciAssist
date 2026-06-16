@@ -1,77 +1,108 @@
-
 # SciAssist — Scientific AI Coding Assistant
 
-SciAssist is an AI-powered scientific and technical assistant that provides analytical insights, supports research workflows, and generates code solutions for complex computational tasks.
+A professional, secure scientific AI assistant powered by **Groq API** (llama-3.3-70b-versatile), deployed on **Vercel** with a serverless proxy so the API key is never exposed to the browser.
 
-## Features
-
-- **Scientific-only AI** — formulas (LaTeX), step-by-step reasoning, code solutions
-- **Streaming responses** (Auto mode) or on-demand (Manual mode)
-- **File attachments** — images, PDFs, documents, audio files (up to 10 MB)
-- **Drag & drop** files onto the chat area
-- **Voice input** — speech-to-text via Web Speech API
-- **Voice output** — text-to-speech on any AI message
-- **Math rendering** — KaTeX for inline ($...$) and block ($$...$$) LaTeX
-- **Syntax highlighting** — Highlight.js for 20+ languages
-- **Dark / Light theme** — auto-detected from system preference
-- **Topic quick-access sidebar** — 12 scientific domains with starter prompts
-- **Zero build step** — runs directly in any modern browser
-
-## Setup
-
-1. Open `index.html` in Chrome, Edge, or Firefox
-2. Enter your **Grok API key** (starts with `xai-`) in the sidebar → **Save**
-3. Start asking scientific questions!
-
-## Getting a Grok API Key
-
-1. Go to [https://console.x.ai](https://console.x.ai)
-2. Sign in and create an API key
-3. Paste it in the sidebar
-
-## Supported Topics
-
-| Domain | Examples |
-|---|---|
-| ⚛️ Atomic & Nuclear Physics | Radioactive decay, binding energy, fission |
-| 🌌 Astrophysics | Schwarzschild radius, Hubble constant, CMB |
-| 🛰️ Orbital Mechanics | Hohmann transfer, delta-v, orbital period |
-| 🖼️ Digital Image Processing | Fourier transform, convolution, edge detection |
-| 📊 Statistics | t-tests, ANOVA, Bayesian inference |
-| ⚡ Electromagnetism | Maxwell's equations, circuit analysis |
-| 🔬 Quantum Mechanics | Schrödinger equation, wavefunctions |
-| 🧪 Chemistry | Thermochemistry, kinetics, spectroscopy |
-| 🌡️ Thermodynamics | Carnot cycle, entropy, heat transfer |
-| 🧬 Biology | Michaelis-Menten, genetic algorithms |
-| 🌍 Earth Sciences | Seismology, climate modeling |
-| 📋 Safety Data Sheets | GHS/MSDS, hazard codes |
-
-## Keyboard Shortcuts
-
-| Key | Action |
-|---|---|
-| `Enter` | Send message |
-| `Shift+Enter` | New line in input |
-| `Escape` | Stop generation |
-
-## Files
+## Security Architecture
 
 ```
-index.html   — Main HTML structure
-styles.css   — Full design system & layout
-app.js       — All application logic
-favicon.svg  — App icon
+Browser  →  /api/chat (Vercel Serverless)  →  Groq API
+                       ↑
+            GROQ_API_KEY stored in
+            Vercel Environment Variables
+            (never sent to client)
 ```
 
-## Browser Support
+---
 
-- Chrome 88+ ✅
-- Edge 88+ ✅
-- Firefox 90+ ✅ (voice input limited)
-- Safari 15+ ✅ (voice input limited)
+## Deploying to Vercel (Step-by-Step)
 
-> Voice input (speech-to-text) works best in Chrome and Edge.
+### 1. Push to GitHub
 
+```bash
+git init
+git add .
+git commit -m "Initial commit"
+git remote add origin https://github.com/YOUR_USERNAME/sciassist.git
+git push -u origin main
+```
 
+### 2. Import to Vercel
 
+1. Go to [vercel.com](https://vercel.com) → **Add New Project**
+2. Import your GitHub repository
+3. Framework Preset: **Other**
+4. Root Directory: leave as `/`
+5. Click **Deploy** (it will fail — that's expected, you need the env var next)
 
+### 3. Add the API Key as an Environment Variable
+
+1. Go to your project on Vercel → **Settings → Environment Variables**
+2. Add:
+   - **Name:** `GROQ_API_KEY`
+   - **Value:** `gsk_your_actual_key_here`
+   - **Environment:** Production + Preview + Development
+3. Click **Save**
+
+### 4. Redeploy
+
+Go to **Deployments → ⋯ → Redeploy**. Your app is now live and secure.
+
+---
+
+## Getting a Groq API Key
+
+1. Go to [console.groq.com](https://console.groq.com)
+2. Sign up with email
+3. Click **API Keys → Create API Key**
+4. Copy the `gsk_...` key — shown once only
+
+---
+
+## Local Development
+
+For local testing, Vercel's serverless functions don't run with plain `python -m http.server`. Use the Vercel CLI:
+
+```bash
+npm install -g vercel
+vercel dev
+```
+
+This starts a local server at `http://localhost:3000` with the `/api/chat` function running, reading from `.env.local`.
+
+Create `.env.local` (already gitignored):
+```
+GROQ_API_KEY=gsk_your_key_here
+```
+
+---
+
+## File Structure
+
+```
+├── api/
+│   └── chat.js          ← Serverless proxy (Groq key lives here only)
+├── auth.html            ← Login / Register page
+├── auth.css             ← Auth page styles
+├── auth.js              ← Auth logic (SHA-256 hashed passwords in localStorage)
+├── index.html           ← Main chat app (auth-guarded)
+├── styles.css           ← Full design system
+├── app.js               ← Chat application logic
+├── favicon.svg
+├── vercel.json          ← Routing + security headers
+├── .env.local           ← Local dev keys (gitignored)
+└── .gitignore
+```
+
+---
+
+## Security Features
+
+| Feature | Detail |
+|---|---|
+| API key never in browser | Stored only in Vercel env vars, used only in `/api/chat.js` |
+| Rate limiting | 20 requests/IP/minute in the serverless function |
+| Input sanitization | All message content is sanitized and length-capped before forwarding |
+| Security headers | CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy |
+| Auth guard | `index.html` redirects to `auth.html` if no session |
+| Password hashing | SHA-256 via `crypto.subtle` before localStorage storage |
+| Sanitized error messages | Raw Groq errors never forwarded to client |
