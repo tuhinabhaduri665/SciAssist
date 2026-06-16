@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SciAssist — Sign In</title>
+  <meta name="description" content="Sign in or create your SciAssist account." />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="auth.css" />
+</head>
+<body>
+
+  <div class="auth-page">
+
+    <!-- Left panel — branding -->
+    <div class="auth-brand">
+      <div class="auth-brand-inner">
+        <div class="auth-orb" aria-hidden="true">
+          <svg viewBox="0 0 160 160" fill="none">
+            <circle cx="80" cy="80" r="75" stroke="var(--accent)" stroke-width="1" opacity="0.2"/>
+            <circle cx="80" cy="80" r="58" stroke="var(--accent)" stroke-width="1.2" opacity="0.35"/>
+            <circle cx="80" cy="80" r="40" stroke="var(--accent)" stroke-width="1.5" opacity="0.55"/>
+            <circle cx="80" cy="80" r="22" stroke="var(--accent)" stroke-width="2" opacity="0.8"/>
+            <circle cx="80" cy="80" r="8" fill="var(--accent)"/>
+            <ellipse cx="80" cy="80" rx="75" ry="24" stroke="var(--accent)" stroke-width="1.2" fill="none" opacity="0.3" transform="rotate(-35 80 80)"/>
+            <ellipse cx="80" cy="80" rx="75" ry="24" stroke="var(--accent)" stroke-width="1.2" fill="none" opacity="0.2" transform="rotate(35 80 80)"/>
+            <ellipse cx="80" cy="80" rx="58" ry="18" stroke="var(--accent)" stroke-width="1" fill="none" opacity="0.25" transform="rotate(-35 80 80)"/>
+          </svg>
+        </div>
+
+        <div class="auth-brand-text">
+          <h1 class="auth-brand-name">SciAssist</h1>
+          <p class="auth-brand-tagline">Scientific AI Coding Assistant</p>
+        </div>
+
+        <p class="auth-brand-desc">
+          Powered by Groq's ultra-fast inference. Ask anything in science — from quantum mechanics to astrophysics, orbital dynamics to statistical analysis.
+        </p>
+
+        <ul class="auth-feature-list" aria-label="Features">
+          <li><span class="feat-icon" aria-hidden="true">⚛️</span> Atomic physics to deep space</li>
+          <li><span class="feat-icon" aria-hidden="true">🖼️</span> Digital Image Processing</li>
+          <li><span class="feat-icon" aria-hidden="true">🛰️</span> Satellite & orbital calculations</li>
+          <li><span class="feat-icon" aria-hidden="true">📊</span> Statistical analysis & data science</li>
+          <li><span class="feat-icon" aria-hidden="true">🧬</span> Biology, chemistry & more</li>
+          <li><span class="feat-icon" aria-hidden="true">💻</span> Code, formulas & deep explanations</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Right panel — form -->
+    <div class="auth-form-panel">
+
+      <div class="auth-theme-row">
+        <button id="themeToggle" class="theme-toggle auth-theme-btn" aria-label="Toggle theme">
+          <span class="theme-icon light-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+              <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+          </span>
+          <span class="theme-icon dark-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </span>
+          <span id="themeLabel">Light Mode</span>
+        </button>
+      </div>
+
+      <div class="auth-card">
+
+        <!-- Tab switcher -->
+        <div class="auth-tabs" role="tablist" aria-label="Authentication mode">
+          <button class="auth-tab active" id="tabLogin" role="tab" aria-selected="true" aria-controls="panelLogin">Sign In</button>
+          <button class="auth-tab" id="tabRegister" role="tab" aria-selected="false" aria-controls="panelRegister">Register</button>
+        </div>
+
+        <!-- ── Login Panel ── -->
+        <div id="panelLogin" class="auth-panel active" role="tabpanel" aria-labelledby="tabLogin">
+          <div class="auth-panel-header">
+            <h2 class="auth-title">Welcome back</h2>
+            <p class="auth-subtitle">Sign in to continue to SciAssist</p>
+          </div>
+
+          <form id="loginForm" class="auth-form" novalidate autocomplete="on">
+            <div class="form-group">
+              <label for="loginEmail" class="form-label">Email</label>
+              <div class="input-wrap">
+                <span class="input-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                </span>
+                <input type="email" id="loginEmail" class="auth-input" placeholder="you@example.com" autocomplete="email" required aria-required="true" />
+              </div>
+              <span class="field-error" id="loginEmailErr" role="alert"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="loginPassword" class="form-label">
+                Password
+                <button type="button" class="forgot-link" id="forgotBtn" tabindex="0">Forgot password?</button>
+              </label>
+              <div class="input-wrap">
+                <span class="input-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </span>
+                <input type="password" id="loginPassword" class="auth-input" placeholder="••••••••" autocomplete="current-password" required aria-required="true" />
+                <button type="button" class="toggle-pw" aria-label="Show password" data-target="loginPassword">
+                  <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <svg class="eye-off-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                </button>
+              </div>
+              <span class="field-error" id="loginPasswordErr" role="alert"></span>
+            </div>
+
+            <div class="form-group form-check-row">
+              <label class="check-label">
+                <input type="checkbox" id="rememberMe" class="check-input" />
+                <span class="check-box" aria-hidden="true"></span>
+                Remember me
+              </label>
+            </div>
+
+            <button type="submit" class="auth-submit-btn" id="loginSubmit">
+              <span class="btn-text">Sign In</span>
+              <span class="btn-spinner" hidden aria-hidden="true"></span>
+            </button>
+          </form>
+
+          <p class="auth-switch">Don't have an account? <button class="switch-link" data-target="register">Create one</button></p>
+        </div>
+
+        <!-- ── Register Panel ── -->
+        <div id="panelRegister" class="auth-panel" role="tabpanel" aria-labelledby="tabRegister" hidden>
+          <div class="auth-panel-header">
+            <h2 class="auth-title">Create account</h2>
+            <p class="auth-subtitle">Join SciAssist — it's free</p>
+          </div>
+
+          <form id="registerForm" class="auth-form" novalidate autocomplete="on">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="regFirstName" class="form-label">First name</label>
+                <div class="input-wrap">
+                  <span class="input-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  </span>
+                  <input type="text" id="regFirstName" class="auth-input" placeholder="Ada" autocomplete="given-name" required aria-required="true" />
+                </div>
+                <span class="field-error" id="regFirstNameErr" role="alert"></span>
+              </div>
+              <div class="form-group">
+                <label for="regLastName" class="form-label">Last name</label>
+                <div class="input-wrap">
+                  <input type="text" id="regLastName" class="auth-input" placeholder="Lovelace" autocomplete="family-name" required aria-required="true" />
+                </div>
+                <span class="field-error" id="regLastNameErr" role="alert"></span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="regEmail" class="form-label">Email</label>
+              <div class="input-wrap">
+                <span class="input-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                </span>
+                <input type="email" id="regEmail" class="auth-input" placeholder="you@example.com" autocomplete="email" required aria-required="true" />
+              </div>
+              <span class="field-error" id="regEmailErr" role="alert"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="regPassword" class="form-label">Password</label>
+              <div class="input-wrap">
+                <span class="input-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </span>
+                <input type="password" id="regPassword" class="auth-input" placeholder="Min. 8 characters" autocomplete="new-password" required aria-required="true" />
+                <button type="button" class="toggle-pw" aria-label="Show password" data-target="regPassword">
+                  <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <svg class="eye-off-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                </button>
+              </div>
+              <!-- Password strength bar -->
+              <div class="pw-strength" id="pwStrength" aria-live="polite">
+                <div class="pw-strength-bar">
+                  <div class="pw-strength-fill" id="pwStrengthFill"></div>
+                </div>
+                <span class="pw-strength-label" id="pwStrengthLabel"></span>
+              </div>
+              <span class="field-error" id="regPasswordErr" role="alert"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="regConfirm" class="form-label">Confirm password</label>
+              <div class="input-wrap">
+                <span class="input-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </span>
+                <input type="password" id="regConfirm" class="auth-input" placeholder="Repeat password" autocomplete="new-password" required aria-required="true" />
+                <button type="button" class="toggle-pw" aria-label="Show confirm password" data-target="regConfirm">
+                  <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <svg class="eye-off-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                </button>
+              </div>
+              <span class="field-error" id="regConfirmErr" role="alert"></span>
+            </div>
+
+            <div class="form-group form-check-row">
+              <label class="check-label">
+                <input type="checkbox" id="agreeTerms" class="check-input" required />
+                <span class="check-box" aria-hidden="true"></span>
+                I agree to use SciAssist for scientific purposes only
+              </label>
+              <span class="field-error" id="agreeTermsErr" role="alert"></span>
+            </div>
+
+            <button type="submit" class="auth-submit-btn" id="registerSubmit">
+              <span class="btn-text">Create Account</span>
+              <span class="btn-spinner" hidden aria-hidden="true"></span>
+            </button>
+          </form>
+
+          <p class="auth-switch">Already have an account? <button class="switch-link" data-target="login">Sign in</button></p>
+        </div>
+
+      </div><!-- /auth-card -->
+
+      <p class="auth-footer-note">Your data stays in your browser — no servers, no tracking.</p>
+
+    </div><!-- /auth-form-panel -->
+  </div><!-- /auth-page -->
+
+  <!-- Toast container -->
+  <div id="toastContainer" class="toast-container" aria-live="assertive" aria-atomic="true" role="alert"></div>
+
+  <!-- Forgot password modal -->
+  <div id="forgotModal" class="modal-backdrop" hidden role="dialog" aria-modal="true" aria-labelledby="forgotTitle">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="forgotTitle" class="modal-title">Reset Password</h3>
+        <button class="modal-close icon-btn" id="modalClose" aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <p class="modal-body">Enter your registered email. Your new password will be shown once — save it immediately.</p>
+      <div class="form-group" style="margin-top:14px">
+        <div class="input-wrap">
+          <span class="input-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </span>
+          <input type="email" id="forgotEmail" class="auth-input" placeholder="you@example.com" autocomplete="email" />
+        </div>
+      </div>
+      <div id="resetResult" class="reset-result" hidden></div>
+      <div class="modal-actions">
+        <button class="auth-submit-btn" id="resetBtn" style="margin-top:0">Reset Password</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+</body>
+</html>
