@@ -1,3 +1,4 @@
+ HEAD
 # SciAssist — Scientific AI Coding Assistant
 
 A professional, browser-based scientific AI assistant powered by the **xAI Grok API**.
@@ -70,3 +71,7 @@ favicon.svg  — App icon
 - Safari 15+ ✅ (voice input limited)
 
 > Voice input (speech-to-text) works best in Chrome and Edge.
+
+# SciAssist
+SciAssist is an AI-powered scientific and technical assistant that provides analytical insights, supports research workflows, and generates code solutions for complex computational tasks.
+9804c7a8e210581072176a658118b0e794e4270e
